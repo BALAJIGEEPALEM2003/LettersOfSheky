@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memory Archive - Phase L 🌌</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Montserrat:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.0/dist/confetti.browser.js"></script>
+
+    <style>
+        :root {
+            --primary-gold: #FFD700;
+            --gold-glow: rgba(255, 215, 0, 0.4);
+            --deep-space: #050508;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Montserrat', sans-serif;
+            background-color: var(--deep-space);
+            color: #fff;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- AUDIO UNLOCK OVERLAY --- */
+        #unlock-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--deep-space);
+            z-index: 10000;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            transition: 1s ease;
+        }
+
+        #unlock-btn {
+            padding: 20px 40px;
+            font-family: 'Orbitron';
+            background: transparent;
+            color: var(--primary-gold);
+            border: 2px solid var(--primary-gold);
+            cursor: pointer;
+            font-size: 1.2em;
+            letter-spacing: 5px;
+            box-shadow: 0 0 20px var(--gold-glow);
+            transition: 0.3s;
+        }
+
+        #unlock-btn:hover {
+            background: var(--primary-gold);
+            color: #000;
+            box-shadow: 0 0 50px var(--primary-gold);
+        }
+
+        /* --- SCROLLING STARFIELD --- */
+        #star-scroll-wrapper {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none;
+        }
+
+        .star {
+            position: absolute; background: white; border-radius: 50%;
+            opacity: 0.6; animation: twinkle var(--duration) infinite ease-in-out;
+        }
+
+        @keyframes twinkle {
+            0%, 100% { transform: scale(1); opacity: 0.4; }
+            50% { transform: scale(1.8); opacity: 1; box-shadow: 0 0 10px white; }
+        }
+
+        /* --- GOLD DUST CURSOR --- */
+        .cursor-particle {
+            position: fixed; width: 4px; height: 4px;
+            background: var(--primary-gold); border-radius: 50%;
+            pointer-events: none; z-index: 9999;
+            animation: particleFade 1s forwards;
+        }
+
+        @keyframes particleFade {
+            from { opacity: 1; transform: scale(1); }
+            to { opacity: 0; transform: scale(3); }
+        }
+
+        /* --- CONTENT SECTION --- */
+        #surprise-content {
+            width: 95%; max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            display: none; /* Hidden until unlocked */
+        }
+
+        .section-header {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.8em;
+            color: var(--primary-gold);
+            text-align: center;
+            margin: 40px 0;
+            letter-spacing: 12px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px var(--gold-glow);
+        }
+
+        /* --- MOSAIC GRID --- */
+        .mosaic-container {
+            column-count: 3;
+            column-gap: 25px;
+            width: 100%;
+        }
+
+        @media (max-width: 900px) { .mosaic-container { column-count: 2; } }
+        @media (max-width: 600px) { .mosaic-container { column-count: 1; } }
+
+        .mosaic-item {
+            display: block; width: 100%; margin-bottom: 25px;
+            break-inside: avoid; border-radius: 15px;
+            overflow: hidden; border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: 0.5s ease; background: #000;
+        }
+
+        .mosaic-item:hover {
+            border-color: var(--primary-gold);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .mosaic-item img, .mosaic-item video {
+            width: 100%; display: block; height: auto;
+        }
+
+        .flipped img { transform: rotate(180deg); }
+        .rotate-right img { transform: rotate(90deg); }
+
+        .final-button-container { margin: 80px 0; text-align: center; }
+        #back-button {
+            padding: 15px 40px; font-family: 'Orbitron'; font-size: 1em;
+            background: transparent; color: #fff;
+            border: 1px solid #fff; border-radius: 4px;
+            text-decoration: none; transition: 0.4s;
+        }
+        #back-button:hover { background: #fff; color: #000; }
+    </style>
+</head>
+
+<body>
+
+    <div id="unlock-overlay">
+        <p style="font-family: 'Orbitron'; color: #555; margin-bottom: 20px; letter-spacing: 3px;">SYSTEM ENCRYPTED</p>
+        <button id="unlock-btn">ENTER ARCHIVE</button>
+    </div>
+
+    <div id="star-scroll-wrapper"></div>
+
+    <audio id="birthday-music" loop>
+        <source src="./spcpics/L/Darlingbgm.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="surprise-content">
+        <h2 class="section-header">COLLECTION_L</h2>
+
+        <div class="mosaic-container">
+            <div class="mosaic-item">
+                <video class="bday-video" playsinline loop muted>
+                    <source src="./spcpics/L/VID_20220716_114857.mp4" type="video/mp4">
+                </video>
+            </div>
+
+            <div class="mosaic-item flipped"><a href="./spcpics/L/IMG_20221018_083902.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083902.jpg"></a></div>
+            <div class="mosaic-item flipped"><a href="./spcpics/L/IMG_20221018_083911.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083911.jpg"></a></div>
+            <div class="mosaic-item flipped"><a href="./spcpics/L/IMG_20220716_114849.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_114849.jpg"></a></div>
+            <div class="mosaic-item rotate-right"><a href="./spcpics/L/IMG_20220716_114853.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_114853.jpg"></a></div>
+            
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115207.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115207.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/IMG_20241028_172026.jpg" target="_blank"><img src="./spcpics/IMG_20241028_172026.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/IMG_20241028_172020.jpg" target="_blank"><img src="./spcpics/IMG_20241028_172020.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/IMG_20241028_172024.jpg" target="_blank"><img src="./spcpics/IMG_20241028_172024.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/Snapchat-1032641264.jpg" target="_blank"><img src="./spcpics/Snapchat-1032641264.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115337.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115337.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115341.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115341.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115451.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115451.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115457.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115457.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115532.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115532.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115559.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115559.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115622.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115622.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115655.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115655.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115658.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115658.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115818.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115818.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115820.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115820.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115859.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115859.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115902.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115902.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_115915.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_115915.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120008.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120008.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120011.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120011.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120047.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120047.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120054.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120054.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120207.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120207.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120234.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120234.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120326.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120326.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120328.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120328.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120417.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120417.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120421.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120421.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120542.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120542.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120544.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120544.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120549.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120549.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120623.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120623.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_120811.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_120811.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121037.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121037.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121043.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121043.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121203.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121203.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121206.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121206.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121313.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121313.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121331.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121331.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121343.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121343.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121442.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121442.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121446.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121446.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121545.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121545.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121547.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121547.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121601.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121601.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121614.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121614.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121633.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121633.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121638.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121638.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121655.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121655.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121725.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121725.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121729.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121729.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121746.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121746.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121832.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121832.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_121837.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_121837.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_125012.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_125012.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20220716_125017.jpg" target="_blank"><img src="./spcpics/L/IMG_20220716_125017.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20221018_083715.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083715.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20221018_083753.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083753.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20221018_083832.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083832.jpg"></a></div>
+            <div class="mosaic-item"><a href="./spcpics/L/IMG_20221018_083836.jpg" target="_blank"><img src="./spcpics/L/IMG_20221018_083836.jpg"></a></div>
+        </div>
+
+        <div class="final-button-container">
+            <a href="index.html" id="back-button">Return to Main Stream</a>
+        </div>
+    </div>
+
+    <script>
+        const bgMusic = document.getElementById('birthday-music');
+        const videos = document.querySelectorAll('.bday-video');
+        const unlockOverlay = document.getElementById('unlock-overlay');
+        const unlockBtn = document.getElementById('unlock-btn');
+        const content = document.getElementById('surprise-content');
+
+        // UNLOCK FLOW: Click button -> Start Audio -> Show Content
+        unlockBtn.addEventListener('click', () => {
+            // Unmute and Play Audio
+            bgMusic.muted = false;
+            bgMusic.play();
+            
+            // Show content and stars
+            unlockOverlay.style.opacity = '0';
+            setTimeout(() => {
+                unlockOverlay.style.display = 'none';
+                content.style.display = 'block';
+                initStars();
+            }, 1000);
+
+            // Celebration
+            confetti({ particleCount: 200, spread: 100 });
+        });
+
+        function initStars() {
+            const starWrapper = document.getElementById('star-scroll-wrapper');
+            starWrapper.innerHTML = '';
+            const totalHeight = document.documentElement.scrollHeight;
+            const numStars = Math.floor((totalHeight / 1000) * 100);
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                const size = Math.random() * 3 + 1 + 'px';
+                star.style.width = size; star.style.height = size;
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * totalHeight + 'px';
+                star.style.setProperty('--duration', Math.random() * 3 + 2 + 's');
+                starWrapper.appendChild(star);
+            }
+        }
+
+        document.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.8) {
+                const p = document.createElement('div');
+                p.className = 'cursor-particle';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                document.body.appendChild(p);
+                setTimeout(() => p.remove(), 1000);
+            }
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.play();
+                } else {
+                    entry.target.pause();
+                }
+            });
+        }, { threshold: 0.3 });
+
+        videos.forEach(v => observer.observe(v));
+        window.onresize = initStars;
+    </script>
+</body>
+
+</html>
